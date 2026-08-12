@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Glossiq Website",
+  "schemaVersion": 1,
+  "description": "GLOSSIQ mobile car wash booking website — customers can browse services and submit bookings, which save to a dedicated Supabase database.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -27,19 +36,7 @@
   body{
     font-family:'Poppins',sans-serif; background:var(--bg); color:var(--text);
     -webkit-font-smoothing:antialiased;
-    opacity:0; animation:pageIn .5s ease forwards;
   }
-  /* NOTE: intentionally opacity-only — animating `transform` here (even to an
-     identity value with fill-mode:forwards) makes body a containing block for
-     position:fixed descendants (the auth/bookings overlays, mobile menu),
-     breaking their full-viewport positioning. */
-  @keyframes pageIn{ from{ opacity:0; } to{ opacity:1; } }
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior:auto; }
-    body{ animation:none; opacity:1; }
-    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
-  }
-  section[id], #book{ scroll-margin-top:86px; }
   a{color:inherit; text-decoration:none;}
   img{display:block; max-width:100%;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
@@ -50,11 +47,10 @@
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:8px;
     padding:15px 30px; border-radius:12px; font-weight:700; font-size:16px;
-    cursor:pointer; border:none; transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease, background .15s ease;
+    cursor:pointer; border:none; transition:transform .15s ease, box-shadow .15s ease;
     letter-spacing:0.2px;
   }
   .btn:hover{ transform:translateY(-2px); }
-  .btn:active{ transform:translateY(0) scale(0.97); }
   .btn-primary{
     background:linear-gradient(90deg,var(--blue-deep),var(--blue-deeper)); color:#fff;
     box-shadow:0 10px 30px rgba(14,165,233,0.35);
@@ -128,13 +124,6 @@
   .svc-price{ font-size:24px; font-weight:800; color:var(--text); }
   .svc-price span{ font-size:13px; color:var(--muted-2); font-weight:500; }
   .svc-time{ font-size:13px; color:var(--muted-2); }
-
-  @keyframes pulse{ 0%,100%{ opacity:0.5; } 50%{ opacity:0.9; } }
-  .svc-skel{ background:var(--panel); border:1px solid var(--panel-border); border-radius:20px; padding:34px 28px; animation:pulse 1.4s ease-in-out infinite; }
-  .svc-skel .sk-line{ background:rgba(255,255,255,0.08); border-radius:6px; height:14px; margin-top:12px; }
-  .svc-skel .sk-icon{ width:56px; height:56px; border-radius:14px; background:rgba(255,255,255,0.08); }
-  .fade-in{ animation:fadeInUp .4s ease; }
-  @keyframes fadeInUp{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
 
   /* ---------- HOW IT WORKS ---------- */
   .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
@@ -225,21 +214,10 @@
   }
 
   .mobile-menu{
-    display:flex; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.97);
+    display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.97);
     flex-direction:column; align-items:center; justify-content:center; gap:30px; font-size:22px; font-weight:600;
-    opacity:0; visibility:hidden; pointer-events:none;
-    transition:opacity .25s ease, visibility 0s linear .25s;
   }
-  .mobile-menu.open{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity .25s ease, visibility 0s linear 0s; }
-  .mobile-menu a, .mobile-menu .auth-area{
-    opacity:0; transform:translateY(10px); transition:opacity .3s ease, transform .3s ease;
-  }
-  .mobile-menu.open a, .mobile-menu.open .auth-area{ opacity:1; transform:translateY(0); }
-  .mobile-menu.open a:nth-child(2){ transition-delay:.03s; }
-  .mobile-menu.open a:nth-child(3){ transition-delay:.06s; }
-  .mobile-menu.open a:nth-child(4){ transition-delay:.09s; }
-  .mobile-menu.open a:nth-child(5){ transition-delay:.12s; }
-  .mobile-menu.open a:nth-child(6){ transition-delay:.15s; }
+  .mobile-menu.open{ display:flex; }
   .mobile-menu button.close{ position:absolute; top:24px; right:24px; background:none; border:none; color:#fff; font-size:30px; }
   .mobile-menu .auth-area{ display:flex; flex-direction:column; gap:14px; align-items:center; }
 
@@ -250,18 +228,14 @@
   .auth-hi{ font-size:14px; font-weight:600; color:var(--text); white-space:nowrap; }
 
   .overlay{
-    display:flex; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px);
+    display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px);
     align-items:center; justify-content:center; padding:20px;
-    opacity:0; visibility:hidden; pointer-events:none;
-    transition:opacity .22s ease, visibility 0s linear .22s;
   }
-  .overlay.open{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity .22s ease, visibility 0s linear 0s; }
+  .overlay.open{ display:flex; }
   .modal-box{
     background:#060c14; border:1px solid var(--panel-border); border-radius:22px; padding:36px; width:100%; max-width:420px;
     position:relative; max-height:88vh; overflow-y:auto;
-    transform:translateY(14px) scale(0.98); transition:transform .25s cubic-bezier(.2,.8,.2,1);
   }
-  .overlay.open .modal-box{ transform:translateY(0) scale(1); }
   .modal-close{ position:absolute; top:18px; right:18px; background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer; }
   .auth-tabs{ display:flex; gap:8px; margin-bottom:24px; background:rgba(255,255,255,0.05); border-radius:12px; padding:5px; }
   .auth-tab{ flex:1; padding:11px; border-radius:9px; background:none; border:none; color:var(--muted); font-weight:600; font-size:14.5px; cursor:pointer; }
@@ -292,7 +266,7 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-cta">
-      <a class="nav-phone" href="tel:+201080727280"><span class="dot">&#9742;</span> 010 80 72 72 80</a>
+      <a class="nav-phone" href="tel:+201555922155"><span class="dot">&#9742;</span> 015 55 92 21 55</a>
       <div class="auth-area" id="authArea"></div>
       <a href="#book" class="btn btn-primary">Book Now</a>
       <button class="menu-btn" id="menuBtn">&#9776;</button>
@@ -378,9 +352,7 @@
       <p>Every job is done on-site with professional-grade equipment. Prices scale by vehicle size — see exact pricing when you book.</p>
     </div>
     <div class="services-grid" id="servicesGrid">
-      <div class="svc-skel"><div class="sk-icon"></div><div class="sk-line" style="width:60%;height:20px;margin-top:18px;"></div><div class="sk-line" style="width:90%;"></div><div class="sk-line" style="width:70%;"></div></div>
-      <div class="svc-skel"><div class="sk-icon"></div><div class="sk-line" style="width:60%;height:20px;margin-top:18px;"></div><div class="sk-line" style="width:90%;"></div><div class="sk-line" style="width:70%;"></div></div>
-      <div class="svc-skel"><div class="sk-icon"></div><div class="sk-line" style="width:60%;height:20px;margin-top:18px;"></div><div class="sk-line" style="width:90%;"></div><div class="sk-line" style="width:70%;"></div></div>
+      <!-- populated by JS, static fallback below -->
     </div>
   </div>
 </section>
@@ -539,8 +511,8 @@
       </div>
       <div class="foot-col">
         <h5>Contact</h5>
-        <a href="tel:+201080727280">&#9742; 010 80 72 72 80</a>
-        <a href="https://wa.me/201080727280" target="_blank">&#128172; WhatsApp Us</a>
+        <a href="tel:+201555922155">&#9742; 015 55 92 21 55</a>
+        <a href="https://wa.me/201555922155" target="_blank">&#128172; WhatsApp Us</a>
         <a href="#">@Glossiq CarCare</a>
       </div>
       <div class="foot-col">
@@ -557,7 +529,7 @@
   </div>
 </footer>
 
-<a class="whatsapp-fab" href="https://wa.me/201080727280" target="_blank" title="Chat on WhatsApp">&#128172;</a>
+<a class="whatsapp-fab" href="https://wa.me/201555922155" target="_blank" title="Chat on WhatsApp">&#128172;</a>
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -602,7 +574,6 @@ let VEHICLES = [];
 
 function renderServicesGrid(){
   const grid = document.getElementById('servicesGrid');
-  grid.classList.add('fade-in');
   grid.innerHTML = SERVICES.map(s => `
     <div class="svc-card">
       <div class="svc-icon">${ICONS[s.icon] || '&#10003;'}</div>
@@ -625,7 +596,6 @@ function renderVehicleSelect(){
 
 function renderServiceChecks(){
   const wrap = document.getElementById('svcChecks');
-  wrap.classList.add('fade-in');
   wrap.innerHTML = SERVICES.map(s => `
     <label class="svc-check" data-key="${s.key}">
       <div class="svc-check-left">
@@ -808,7 +778,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   const waText = encodeURIComponent(
     `Hi GLOSSIQ! New booking ${ref}\nName: ${name}\nPhone: ${phone}\nVehicle: ${vehicleName}\nServices: ${chosen.map(s=>s.name).join(', ')}\nDate: ${date} at ${time}\nAddress: ${address}\nEstimated total: EGP ${total.toFixed(0)}${notes ? '\nNotes: '+notes : ''}`
   );
-  document.getElementById('waConfirmBtn').href = `https://wa.me/201080727280?text=${waText}`;
+  document.getElementById('waConfirmBtn').href = `https://wa.me/201555922155?text=${waText}`;
 
   if (!saved){
     document.getElementById('successTitle').textContent = 'Almost there!';
